@@ -3,7 +3,7 @@ import { CohereClient } from "cohere-ai";
 const cohere = new CohereClient({ apiKey: process.env.CO_API_KEY });
 
 export async function sendMessage(message, type, history = []) {
-    let preamble = "Você é um assistente educativo que ajuda alunos. E se caso na sua resposta tiver calculos ou equações, formate-os.";
+    let preamble = "Você é um assistente educativo que ajuda alunos. E se caso na sua resposta tiver calculos, equações ou tabelas, formate-os.";
 
     switch (type) {
         case "explicacao":

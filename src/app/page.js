@@ -6,23 +6,32 @@ export default function Home() {
   const [message, setMessage] = useState("");
   const [chat, setChat] = useState([]);
   const [type, setType] = useState("explicacao");
+  const [loading, setLoading] = useState(false);
 
   async function sendMessage() {
-    if (!message) return;
+    try {
+      if (!message) return;
 
-    const newChat = [...chat, { role: "USER", message, type }];
+      const newChat = [...chat, { role: "USER", message, type }];
+      setLoading(true);
 
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message, type, history: newChat }),
-    });
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message, type, history: newChat }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    setChat([...newChat, { role: "ASSISTANT", message: data.reply }]);
-    setMessage("");
-  }
+      setChat([...newChat, { role: "ASSISTANT", message: data.reply }]);
+      setMessage("");
+    } catch (err) {
+      console.log(err.message)
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#0b0e14] text-white p-8 font-sans">
@@ -46,7 +55,7 @@ export default function Home() {
         <div className="bg-[#161b22] border border-gray-800 rounded-xl p-6 mb-6 min-h-125 max-h-150 overflow-y-auto">
           {chat.map((c, i) => (
             <div key={i} className="mb-6 last:mb-0">
-=              <div className="flex flex-col gap-2">
+              =              <div className="flex flex-col gap-2">
                 <span className={`font-bold text-md uppercase tracking-wider ${c.role === 'USER' ? 'text-blue-400 text-right' : 'text-purple-400 text-left'}`}>
                   {c.role}:
                 </span>
@@ -64,6 +73,7 @@ export default function Home() {
 
         <div className="flex gap-3">
           <input
+            autoFocus
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Digite seu assunto ou texto..."
@@ -73,7 +83,7 @@ export default function Home() {
             className="bg-[#3123a1] hover:bg-[#3f2dbd] text-white px-8 py-3 rounded-lg font-semibold transition-all shadow-lg active:scale-95"
             onClick={sendMessage}
           >
-            Enviar
+            {loading ? "Enviando..." : "Enviar"}
           </button>
         </div>
 
