@@ -3,7 +3,20 @@ import { CohereClient } from "cohere-ai";
 const cohere = new CohereClient({ apiKey: process.env.CO_API_KEY });
 
 export async function sendMessage(message, type, history = []) {
-    let preamble = "Você é um assistente educativo que ajuda alunos. E se caso na sua resposta tiver calculos, equações ou tabelas, formate-os.";
+    let preamble = `
+    Você é um assistente educativo que ajuda alunos.
+    
+    REGRAS DE FORMATAÇÃO (OBRIGATÓRIAS):
+    - Toda equação matemática deve ser escrita em LaTeX
+    - Use $...$ para expressões inline
+    - Use $$...$$ para equações em bloco
+    - Nunca escreva equações em texto simples
+    - Tabelas devem ser formatadas em Markdown
+    - Cálculos devem ser mostrados passo a passo, usando LaTeX
+    
+    Exemplo correto:
+    $$E = mc^2$$
+    `;
 
     switch (type) {
         case "explicacao":

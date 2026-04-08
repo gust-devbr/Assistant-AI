@@ -1,4 +1,5 @@
 "use client";
+import { MarkdownMessage } from "@/utils/markdown";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 
@@ -62,7 +63,7 @@ export default function Home() {
 
                 <div className="bg-[#0d1117] border border-gray-800 rounded-lg p-4 relative group">
                   <div className={`text-gray-200 leading-relaxed ${c.role === "USER" ? "text-right" : "text-left"}`}>
-                    <ReactMarkdown>{c.message}</ReactMarkdown>
+                    <MarkdownMessage message={c.message} />
                   </div>
 
                 </div>
