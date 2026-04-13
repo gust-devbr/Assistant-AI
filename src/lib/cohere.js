@@ -2,6 +2,21 @@ import { CohereClient } from "cohere-ai";
 
 const cohere = new CohereClient({ apiKey: process.env.CO_API_KEY });
 
+function formatHistory(messages = []) {
+    return messages.map((msg) => {
+        let role = "User";
+
+        if (
+            msg.role === "ASSISTANT" ||
+            msg.role === "assistant"
+        ) {
+            role = "Chatbot";
+        }
+
+        return { role, message: msg.message || msg.content };
+    })
+};
+
 export async function sendMessage(message, type, history = []) {
     let preamble = `
     Você é um assistente educativo que ajuda alunos.
@@ -34,8 +49,8 @@ export async function sendMessage(message, type, history = []) {
         model: "command-xlarge-nightly",
         preamble: preamble,
         message: message,
-        chatHistory: history,
+        chatHistory: formatHistory(history),
     });
 
-    return response;
+    return response.text;
 };
