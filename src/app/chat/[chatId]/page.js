@@ -8,6 +8,7 @@ import { apiFetch } from "@/utils/api";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { AuthModal } from "@/components/modal/AuthModal";
+import { Separator } from "@/components/ui/separator";
 
 export default function ChatPage() {
     const router = useRouter();
@@ -79,21 +80,26 @@ export default function ChatPage() {
     };
 
     return (
-        <div className="flex flex-col h-screen bg-linear-to-b from-[#0b0e14] to-[#111827] text-white">
-            <div className="p-4 border-b border-gray-800 flex justify-between items-center">
-                <h1 className="text-xl font-semibold">Assistente de Estudos</h1>
-                <h1 className="text-xl font-semibold">
-                    {user ? `Olá ${user.name}` : "Olá Anônimo"}
-                </h1>
+        <main className="flex flex-col h-screen bg-linear-to-b from-[#0b0e14] to-[#111827] text-white">
+            <header className="p-4 border-b border-gray-800 flex flex-col gap-3 items-center">
+                <h1 className="text-2xl md:text-3xl font-semibold">Assistente de Estudos</h1>
 
-                {user ? (
-                    <Button variant="outline" className="text-black" onClick={() => router.replace("/")}>
-                        Voltar
-                    </Button>
-                ) : (
-                    <AuthModal />
-                )}
-            </div>
+                <Separator />
+
+                <div className="flex flex-row justify-between w-full">
+                    <h1 className="text-md md:text-xl font-semibold">
+                        {user ? `Olá ${user.name}` : "Olá Anônimo"}
+                    </h1>
+
+                    {user ? (
+                        <Button variant="outline" className="text-black" onClick={() => router.replace("/")}>
+                            Voltar
+                        </Button>
+                    ) : (
+                        <AuthModal />
+                    )}
+                </div>
+            </header>
 
             <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
 
@@ -130,11 +136,11 @@ export default function ChatPage() {
                 <div ref={bottomRef} />
             </div>
 
-            <div className="p-4 border-t border-gray-800 flex gap-3 items-center">
+            <div className="p-4 border-t border-gray-800 flex flex-col md:flex-row gap-3 items-center">
                 <select
                     value={type}
                     onChange={(e) => setType(e.target.value)}
-                    className="bg-[#0d1117] border border-gray-700 rounded-md px-3 py-4 text-md"
+                    className="bg-[#0d1117] border md:w-30 w-full border-gray-700 rounded-md px-3 py-4 text-md"
                 >
                     <option value="explicacao">Explicação</option>
                     <option value="resumo">Resumo</option>
@@ -142,21 +148,23 @@ export default function ChatPage() {
                     <option value="duvida">Dúvida</option>
                 </select>
 
-                <input
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Digite sua mensagem..."
-                    className="flex-1 bg-[#0d1117] border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 "
-                />
+                <div className="flex flex-1 gap-2 w-full flex-row">
+                    <input
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Digite sua mensagem..."
+                        className="flex-1 bg-[#0d1117] border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 "
+                    />
 
-                <button
-                    onClick={sendMessage}
-                    disabled={!message}
-                    className={`bg-indigo-600 hover:bg-indigo-500 px-6 py-3 rounded-lg font-medium transition active:scale-95  ${!message ? " opacity-50 cursor-not-allowed" : ""}`}
-                >
-                    Enviar
-                </button>
+                    <button
+                        onClick={sendMessage}
+                        disabled={!message}
+                        className={`bg-indigo-600 hover:bg-indigo-500 px-6 py-3 rounded-lg font-medium transition active:scale-95  ${!message ? " opacity-50 cursor-not-allowed" : ""}`}
+                    >
+                        Enviar
+                    </button>
+                </div>
             </div>
-        </div>
+        </main>
     );
 }
