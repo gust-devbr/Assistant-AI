@@ -9,6 +9,9 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { AuthModal } from "@/components/modal/AuthModal";
 import { Separator } from "@/components/ui/separator";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
+import { InfoButton } from "@/components/modal/InfoButton";
 
 export default function ChatPage() {
     const router = useRouter();
@@ -137,16 +140,20 @@ export default function ChatPage() {
             </div>
 
             <div className="p-4 border-t border-gray-800 flex flex-col md:flex-row gap-3 items-center">
-                <select
-                    value={type}
-                    onChange={(e) => setType(e.target.value)}
-                    className="bg-[#0d1117] border md:w-30 w-full border-gray-700 rounded-md px-3 py-4 text-md"
-                >
-                    <option value="explicacao">Explicação</option>
-                    <option value="resumo">Resumo</option>
-                    <option value="questao">Questões</option>
-                    <option value="duvida">Dúvida</option>
-                </select>
+              <div className="flex flex-row items-center gap-3 w-full md:w-40">
+                    <InfoButton />
+
+                    <select
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}
+                        className="bg-[#0d1117] border md:w-30 w-full border-gray-700 rounded-md px-3 py-4 text-md"
+                    >
+                        <option value="explicacao">Explicação</option>
+                        <option value="resumo">Resumo</option>
+                        <option value="questao">Questões</option>
+                        <option value="duvida">Dúvida</option>
+                    </select>
+              </div>
 
                 <div className="flex flex-1 gap-2 w-full flex-row">
                     <input
