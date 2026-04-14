@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { apiFetch } from "@/utils/api";
 import { Button } from "../ui/button";
 import { useAuth } from "@/context/AuthContext";
-import { MoreVertical, Power, Trash } from "lucide-react";
+import { MoreVertical, Pin, PinOff, Power, Trash } from "lucide-react";
 import { ChatModal } from "../modal/ChatModal";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
@@ -34,6 +34,11 @@ export function AppSidebar() {
     async function deleteChat(id) {
         await apiFetch(`/private/chat/${id}`, { method: "DELETE" });
         setTimeout(() => router.replace("/chat"), 800);
+    };
+
+    async function fixedChat(id) {
+        await apiFetch(`/private/chat/${id}`, { method: "PATCH" });
+        setTimeout(() => window.location.reload(), 500);
     };
 
     useEffect(() => {
@@ -87,6 +92,10 @@ export function AppSidebar() {
                                         <DropdownMenuItem className="text-red-500" onClick={() => deleteChat(chat.id)}>
                                             <Trash />
                                             Excluir
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem className="text-black" onClick={() => fixedChat(chat.id)}>
+                                            {chat.fixed ? <PinOff /> : <Pin />}
+                                            {chat.fixed ? "Desfixar" : "Fixar"}
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
