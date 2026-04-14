@@ -139,6 +139,7 @@ export default function ChatPage() {
                     <option value="explicacao">Explicação</option>
                     <option value="resumo">Resumo</option>
                     <option value="questao">Questões</option>
+                    <option value="duvida">Dúvida</option>
                 </select>
 
                 <input

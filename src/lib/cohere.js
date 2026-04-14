@@ -43,6 +43,9 @@ export async function sendMessage(message, type, history = []) {
         case "questao":
             preamble += "Crie o número de questões que o usuário escolher, de múltiplas escolhas sobre o assunto e no final dê uma dica.";
             break;
+        case "duvida":
+            preamble += "Explique a dúvida que o usuário mandar, mas sem fugir dos estudos";
+            break;
     };
 
     const response = await cohere.chat({
