@@ -24,6 +24,8 @@ export async function POST(req) {
     try {
         const { message, history, type, chatId } = await req.json();
 
+        if (!chatId) return Response.error("Obrigatório selecionar chat", null, 400)
+
         const user = await getUserFromToken();
 
         const reply = await sendMessage(message, type, history);
@@ -32,19 +34,9 @@ export async function POST(req) {
             return Response.success({ reply });
         };
 
-        let currentChatId = chatId;
+        await msgService.create(chatId, message, reply);
 
-        if (!currentChatId) {
-            const chat = await chatService.create(message.slice(0, 30) || "Novo Chat", user.id);
-
-            if (!newChat?.id) throw new Error("Falha ao criar chat");
-
-            currentChatId = chat.id;
-        };
-
-        await msgService.create(currentChatId, message, reply);
-
-        return Response.success({ reply, chatId: currentChatId });
+        return Response.success({ reply, chatId });
 
     } catch (error) {
         return Response.error("Erro ao enviar mensagens", error);
