@@ -1,0 +1,28 @@
+import { NextRequest } from "next/server";
+import { jwtUtil, Response } from "@/utils";
+import { userService } from "@/services/userService";
+import bcrypt from "bcryptjs";
+
+export async function POST(req: NextRequest) {
+    try {
+        const { userName, password } = await req.json();
+
+        const existUser = await userService.findByUserName(userName);
+        if (!existUser) return Response.error("Usuário não encontrado", null, 404);
+
+        const match = await bcrypt.compare(password, existUser.password);
+        if (!match) return Response.error("Credenciais inválidas", null, 400);
+
+        const safeUser = {
+            id: existUser.id,
+            name: existUser.name,
+            userName: existUser.userName
+        };
+
+        const token = jwtUtil.generate(existUser);
+
+        return Response.success({ token, user: safeUser }, "Logado com sucesso");
+    } catch (error) {
+        return Response.error("Erro ao logar", error);
+    }
+};
