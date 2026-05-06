@@ -1,3 +1,4 @@
 {
+    "files.autoSave": "off",
     "prisma.pinToPrisma6": true
 }
