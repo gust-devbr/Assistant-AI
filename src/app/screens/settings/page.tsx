@@ -1,5 +1,7 @@
 import { FooterCard, ProfileCard, ThemeCard } from "@/components/modules";
+import { ColorThemeCard } from "@/components/modules/settings/card/theme/ColorSelectorCard";
 import { AccountCard } from "@/components/modules/settings/card/user/AccountCard";
+import { ColorThemeSelector } from "@/components/theme/themeSelector";
 
 export default function SettingsPage() {
     return (
@@ -12,8 +14,9 @@ export default function SettingsPage() {
                 <ProfileCard />
 
                 <section className="flex md:flex-row flex-col gap-5 md:justify-between">
-                    <div className="flex-1">
+                    <div className="flex-1 space-y-5">
                         <ThemeCard />
+                        <ColorThemeCard />
                     </div>
                     <div className="w-full md:max-w-110">
                         <AccountCard />

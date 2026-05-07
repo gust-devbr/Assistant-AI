@@ -34,8 +34,8 @@ export function ThemeSelector() {
                                 flex items-center gap-2 rounded-xl border p-4
                                 transition-all
                                 ${active
-                                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30"
-                                    : "border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"}
+                                    ? "border-border bg-primary dark:bg-primary"
+                                    : "border-border hover:bg-ring dark:border-border dark:hover:bg-ring"}
                                 `}
                         >
                             <Icon className="w-5 h-5" />
@@ -44,10 +44,10 @@ export function ThemeSelector() {
                             <div className="ml-auto">
                                 <div
                                     className={`
-                                        w-4 h-4 rounded-full border
+                                        w-4 h-4 rounded-full border-border
                                         ${active
-                                            ? "bg-blue-500 border-blue-500"
-                                            : "border-gray-400"}
+                                            ? "bg-accent-foreground border border-border"
+                                            : "border-border"}
                                     `}
                                 />
                             </div>

@@ -71,8 +71,8 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel className="py-6 text-zinc-500 flex items-center gap-2">
-                        <MessageCircleMore className="w-7! h-7!" />
+                    <SidebarGroupLabel className="py-6 flex items-center gap-2">
+                        <MessageCircleMore className="w-7! h-7! text-primary" />
                         <span className="text-xl">Assistant AI</span>
                     </SidebarGroupLabel>
 
@@ -87,7 +87,7 @@ export function AppSidebar() {
 
                     <Separator />
 
-                    <SidebarMenu>
+                    <SidebarMenu className="relative">
                         {chats.map(chat => (
                             <SidebarMenuItem
                                 title={chat.title}
@@ -95,13 +95,14 @@ export function AppSidebar() {
                                 className="group flex items-center py-1"
                             >
                                 <SidebarMenuButton asChild>
-                                    <button
+                                    <Button
                                         onClick={() => router.push(`/screens/home/${chat.id}`)}
                                         className={cn(
-                                            "flex items-center gap-2 w-full rounded-md px-2 py-1 transition-colors",
+                                            "flex flex-1 items-center gap-2 w-full",
+                                            "rounded-md px-2 py-1 transition-colors text-white justify-start",
                                             chatId === chat.id
-                                                ? "bg-zinc-800 text-white"
-                                                : "hover:bg-zinc-800/50 text-zinc-300"
+                                                ? "bg-primary hover:bg-primary/20"
+                                                : "hover:bg-zinc-800/50"
                                         )}
                                     >
                                         <MessageCircleMore className="w-5! h-5! shrink-0" />
@@ -111,7 +112,7 @@ export function AppSidebar() {
                                                 {chat.title}
                                             </span>
                                         )}
-                                    </button>
+                                    </Button>
                                 </SidebarMenuButton>
 
                                 {!collapsed && (
@@ -120,7 +121,10 @@ export function AppSidebar() {
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="h-7 w-7 opacity-0 group-hover:opacity-100"
+                                                className={cn(
+                                                    "h-7 w-7 opacity-0 group-hover:opacity-100",
+                                                    "absolute right-2 top-1/2 -translate-y-1/2",
+                                                )}
                                                 onClick={(e) => e.stopPropagation()}
                                             >
                                                 <MoreVertical className="h-4 w-4" />
