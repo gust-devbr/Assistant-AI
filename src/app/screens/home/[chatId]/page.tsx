@@ -13,6 +13,7 @@ import { InfoButton } from "@/components/modules";
 import { Message, MsgProps, MsgTypeProps, } from "@/types";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { Send } from "lucide-react";
 
 export default function ChatPage() {
     const router = useRouter();
@@ -93,6 +94,8 @@ export default function ChatPage() {
         setTimeout(() => router.refresh(), 800)
     }
 
+    const renderingInput = (user && chatId !== "null") || (!user && chatId === "null")
+
     return (
         <main className="flex flex-col h-screen">
             <header className="p-4 border-b border-gray-800 flex flex-col gap-3 items-center">
@@ -101,12 +104,16 @@ export default function ChatPage() {
                 <Separator />
 
                 <div className="flex flex-row justify-between w-full">
-                    <h1 className="text-md md:text-xl font-semibold">
+                    <h1 className="text-md md:text-xl font-bold">
                         {user ? `Olá ${user.name}` : "Olá Anônimo"}
                     </h1>
 
                     {user ? (
-                        <Button variant="outline" onClick={() => router.replace("/")}>
+                        <Button
+                            variant="secondary"
+                            onClick={() => router.replace("/")}
+                            className="bg-primary"
+                        >
                             Voltar
                         </Button>
                     ) : (
@@ -131,7 +138,7 @@ export default function ChatPage() {
                         <div
                             className={cn(
                                 "max-w-[75%] px-4 py-3 rounded-2xl shadow text-gray-200 flex flex-col gap-2",
-                                c.role === "USER" ? "bg-[#2e5a98]" : "bg-[#3b4047]"
+                                c.role === "USER" ? "bg-primary" : "bg-[#3b4047]"
                             )}
                         >
                             <MarkdownMessage message={c.message} />
@@ -154,40 +161,46 @@ export default function ChatPage() {
                 <div ref={bottomRef} />
             </div>
 
-            <div className="p-4 border-t flex flex-col md:flex-row gap-3 items-center">
-                <div className="flex flex-row items-center gap-3 w-full md:w-40">
-                    <InfoButton />
+            {renderingInput && (
+                <div className="p-4 border-t border-zinc-600 flex flex-col md:flex-row gap-3 items-center">
+                    <div className="flex flex-row items-center gap-1 w-full md:w-40">
+                        <InfoButton />
 
-                    <select
-                        value={type}
-                        onChange={(e) => setType(e.target.value as MsgTypeProps)}
-                        className="border md:w-30 w-full rounded-md px-3 py-4 text-md"
-                    >
-                        <option value="explicacao">Explicação</option>
-                        <option value="resumo">Resumo</option>
-                        <option value="questao">Questões</option>
-                        <option value="duvida">Dúvida</option>
-                    </select>
+                        <select
+                            value={type}
+                            onChange={(e) => setType(e.target.value as MsgTypeProps)}
+                            className="border border-zinc-600 md:w-32 w-full rounded-md px-3 py-4 text-md"
+                        >
+                            <option value="explicacao">Explicação</option>
+                            <option value="resumo">Resumo</option>
+                            <option value="questao">Questões</option>
+                            <option value="duvida">Dúvida</option>
+                        </select>
+                    </div>
+
+                    <div className="w-full relative">
+                        <input
+                            disabled={loading}
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            placeholder="Digite sua mensagem..."
+                            className="w-full border border-zinc-600 rounded-lg px-4 py-3 focus:outline-none"
+                        />
+
+                        <button
+                            onClick={sendMessage}
+                            disabled={!message || loading}
+                            className={cn(
+                                "px-2 py-1 rounded-xl font-medium transition active:scale-95",
+                                "absolute right-2 top-1/2 -translate-y-1/2",
+                                !message && "opacity-50 cursor-not-allowed"
+                            )}
+                        >
+                            <Send className="text-primary w-7! h-7!" />
+                        </button>
+                    </div>
                 </div>
-
-                <div className="flex flex-1 gap-2 w-full flex-row">
-                    <input
-                        disabled={loading}
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        placeholder="Digite sua mensagem..."
-                        className="flex-1 border rounded-lg px-4 py-3 focus:outline-none"
-                    />
-
-                    <button
-                        onClick={sendMessage}
-                        disabled={!message || loading}
-                        className={`px-6 py-3 border rounded-lg font-medium transition active:scale-95 ${!message && "opacity-50 cursor-not-allowed"}`}
-                    >
-                        Enviar
-                    </button>
-                </div>
-            </div>
+            )}
         </main>
     );
 }

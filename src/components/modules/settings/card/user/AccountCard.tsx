@@ -8,18 +8,18 @@ import { DeleteAllChats } from "../../modal/user/DeleteChats"
 
 export function AccountCard() {
     return (
-        <Card>
+        <Card className="md:h-full">
             <CardHeader>
                 <CardTitle className="text-xl">Conta</CardTitle>
             </CardHeader>
 
-            <Separator />
+            <Separator className="border border-accent" />
 
             <CardContent className="flex flex-col gap-3">
                 <DeleteAccountModal />
-                <Separator />
+                <Separator className="border border-accent" />
                 <EditPassModal />
-                <Separator />
+                <Separator className="border border-accent" />
                 <DeleteAllChats />
             </CardContent>
         </Card>

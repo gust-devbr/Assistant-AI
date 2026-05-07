@@ -13,12 +13,13 @@ export function MsgOptionsPortal({ onDelete }: Props) {
         <Popover>
             <PopoverTrigger asChild>
                 <Button variant="ghost">
-                    <EllipsisVertical className="w-4! h-4! text-zinc-500" />
+                    <EllipsisVertical className="w-4! h-4!" />
                 </Button>
             </PopoverTrigger>
 
             <PopoverContent className="w-12">
                 <Button
+                    title="Deletar mensagem"
                     onClick={onDelete}
                     variant="ghost"
                     className="text-red-500 hover:text-red-600"

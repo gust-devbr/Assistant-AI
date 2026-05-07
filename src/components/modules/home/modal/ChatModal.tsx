@@ -64,7 +64,7 @@ export function ChatModal({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogTrigger asChild>
-                <Button onClick={onClick} className="text-md border-none rounded-lg mb-8">
+                <Button onClick={onClick} className="text-md border-none rounded-lg mb-8" title="Novo chat">
                     <div className="flex flex-row items-center gap-2">
                         <Plus className="h-6! w-6!" />
                         {!collapsed && <p>Novo Chat</p>}

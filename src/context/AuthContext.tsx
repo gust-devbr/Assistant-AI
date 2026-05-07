@@ -59,6 +59,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     async function logout() {
+        localStorage.removeItem("accent-theme");
+        document.documentElement.setAttribute("data-accent", "gray");
+
         await apiFetch("/auth/logout", { method: "POST" })
         setUser(null)
         router.replace("/")
