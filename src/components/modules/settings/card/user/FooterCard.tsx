@@ -15,7 +15,7 @@ export function FooterCard() {
                     <MessageCircleCode className="w-8! h-8!" />
                     <span className="flex flex-col gap-2">
                         <h3>Sobre o Assistant AI</h3>
-                        <p className="text-zinc-400">Versão 2.0.0</p>
+                        <p className="text-zinc-400">Versão 2.1.1</p>
                     </span>
                 </div>
 

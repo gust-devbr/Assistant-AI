@@ -122,7 +122,7 @@ export function AppSidebar() {
                                                 variant="ghost"
                                                 size="icon"
                                                 className={cn(
-                                                    "h-7 w-7 opacity-0 group-hover:opacity-100",
+                                                    "h-7 w-7 md:opacity-0 group-hover:opacity-100",
                                                     "absolute right-2 top-1/2 -translate-y-1/2",
                                                 )}
                                                 onClick={(e) => e.stopPropagation()}
