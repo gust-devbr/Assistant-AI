@@ -91,7 +91,7 @@ export default function ChatPage() {
 
     async function handleDeleteMsg(id: string | undefined) {
         await apiFetch(`/private/message/${id}/delete`, { method: "DELETE" })
-        setTimeout(() => router.refresh(), 800)
+        setTimeout(() => window.location.reload(), 800)
     }
 
     const renderingInput = (user && chatId !== "null") || (!user && chatId === "null")

@@ -29,7 +29,8 @@ export function ChatModal({
     onReload
 }: Props) {
     const router = useRouter();
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         if (chat) {
@@ -40,6 +41,8 @@ export function ChatModal({
     }, [chat]);
 
     async function handleSubmit() {
+        setLoading(true)
+
         if (!title) {
             alert("Complete o campo");
             return;
@@ -58,6 +61,8 @@ export function ChatModal({
             onReload()
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -88,7 +93,11 @@ export function ChatModal({
                         onChange={(e) => setTitle(e.target.value)}
                     />
 
-                    <Button onClick={handleSubmit} disabled={!title} className="w-full py-4 text-[18px] mt-5">
+                    <Button
+                        onClick={handleSubmit}
+                        disabled={!title || loading}
+                        className="w-full py-4 text-[18px] mt-5"
+                    >
                         Salvar
                     </Button>
                 </div>

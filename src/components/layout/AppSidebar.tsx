@@ -101,8 +101,8 @@ export function AppSidebar() {
                                             "flex flex-1 items-center gap-2 w-full",
                                             "rounded-md px-2 py-1 transition-colors text-white justify-start",
                                             chatId === chat.id
-                                                ? "bg-primary hover:bg-primary/20"
-                                                : "hover:bg-zinc-800/50"
+                                                ? "bg-primary hover:bg-primary/80"
+                                                : "hover:bg-zinc-800/50 bg-zinc-400"
                                         )}
                                     >
                                         <MessageCircleMore className="w-5! h-5! shrink-0" />
@@ -122,7 +122,7 @@ export function AppSidebar() {
                                                 variant="ghost"
                                                 size="icon"
                                                 className={cn(
-                                                    "h-7 w-7 opacity-0 group-hover:opacity-100",
+                                                    "h-7 w-7 md:opacity-0 group-hover:opacity-100",
                                                     "absolute right-2 top-1/2 -translate-y-1/2",
                                                 )}
                                                 onClick={(e) => e.stopPropagation()}
