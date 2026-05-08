@@ -3,6 +3,7 @@ import { Response, getSearchParams } from "@/utils";
 import { msgService } from "@/services/msgService";
 import { sendMessage } from "@/lib/cohere";
 import { getToken } from "@/utils/modules/api/auth";
+import { chatService } from "@/services/chatService";
 
 export async function GET(req: NextRequest) {
     try {
@@ -10,7 +11,7 @@ export async function GET(req: NextRequest) {
         if (!user) return Response.error("Não autorizado", null, 401);
 
         const { chatId } = getSearchParams(req);
-        if (!chatId) return Response.error("ID não fornecido", null, 400)
+        if (!chatId) return Response.error("ID não fornecido", null, 400);
 
         const messages = await msgService.getAll(chatId);
 
@@ -18,15 +19,22 @@ export async function GET(req: NextRequest) {
     } catch (error) {
         return Response.error("Erro ao buscar mensagens", error);
     }
-};
+}
 
 export async function POST(req: NextRequest) {
     try {
-        const { message, history, type, chatId } = await req.json();
-
-        if (!chatId) return Response.error("Obrigatório selecionar chat", null, 400)
+        const { message, history, type, chatId: rawChatId } = await req.json();
 
         const user = await getToken(req);
+
+        let chatId = rawChatId;
+        let newChat = false;
+
+        if (!chatId && user) {
+            const created = await chatService.create(message, user.id);
+            chatId = created.id;
+            newChat = true;
+        }
 
         const reply = await sendMessage(message, type, history);
 
@@ -37,13 +45,13 @@ export async function POST(req: NextRequest) {
 
         if (!user) {
             return Response.success({ reply });
-        };
+        }
 
         await msgService.create(chatId, message, reply);
 
-        return Response.success({ reply, chatId });
+        return Response.success({ reply, chatId, newChat });
 
     } catch (error) {
         return Response.error("Erro ao enviar mensagens", error);
     }
-};
+}

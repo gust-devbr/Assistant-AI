@@ -62,7 +62,7 @@ export function AppSidebar() {
 
     useEffect(() => {
         loadChats()
-    }, [loadChats])
+    }, [loadChats, chatId])
 
     return (
         <Sidebar collapsible="icon">

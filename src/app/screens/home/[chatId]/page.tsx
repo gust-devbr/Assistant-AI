@@ -60,13 +60,9 @@ export default function ChatPage() {
         loadMessages();
     }, [chatId]);
 
+    // DEPOIS
     async function sendMessage() {
         if (!message) return;
-
-        if (user && chatId === "null") {
-            toast.error("Selecione ou crie um Chat antes de enviar mensagem");
-            return;
-        };
 
         const newChat = [...chat, { role: "USER", message }];
         setChat(newChat);
@@ -79,12 +75,15 @@ export default function ChatPage() {
                 message,
                 history: newChat,
                 type,
-                chatId
+                chatId: chatId === "null" ? undefined : chatId,
             }),
         });
 
-        const reply = res?.data?.reply
+        if (res?.data?.newChat && res?.data?.chatId) {
+            router.replace(`/screens/home/${res.data.chatId}`);
+        }
 
+        const reply = res?.data?.reply;
         setChat(prev => [...prev, { role: "ASSISTANT", message: reply || "Erro ao gerar resposta" }]);
         setLoading(false);
     };
@@ -93,8 +92,6 @@ export default function ChatPage() {
         await apiFetch(`/private/message/${id}/delete`, { method: "DELETE" })
         setTimeout(() => window.location.reload(), 800)
     }
-
-    const renderingInput = (user && chatId !== "null") || (!user && chatId === "null")
 
     return (
         <main className="flex flex-col h-screen">
@@ -161,46 +158,44 @@ export default function ChatPage() {
                 <div ref={bottomRef} />
             </div>
 
-            {renderingInput && (
-                <div className="p-4 border-t border-zinc-600 flex flex-col md:flex-row gap-3 items-center">
-                    <div className="flex flex-row items-center gap-1 w-full md:w-40">
-                        <InfoButton />
+            <div className="p-4 border-t border-zinc-600 flex flex-col md:flex-row gap-3 items-center">
+                <div className="flex flex-row items-center gap-1 w-full md:w-40">
+                    <InfoButton />
 
-                        <select
-                            value={type}
-                            onChange={(e) => setType(e.target.value as MsgTypeProps)}
-                            className="border border-zinc-600 md:w-32 w-full rounded-md px-3 py-4 text-md"
-                        >
-                            <option value="explicacao">Explicação</option>
-                            <option value="resumo">Resumo</option>
-                            <option value="questao">Questões</option>
-                            <option value="duvida">Dúvida</option>
-                        </select>
-                    </div>
-
-                    <div className="w-full relative">
-                        <input
-                            disabled={loading}
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Digite sua mensagem..."
-                            className="w-full border border-zinc-600 rounded-lg px-4 py-3 focus:outline-none"
-                        />
-
-                        <button
-                            onClick={sendMessage}
-                            disabled={!message || loading}
-                            className={cn(
-                                "px-2 py-1 rounded-xl font-medium transition active:scale-95",
-                                "absolute right-2 top-1/2 -translate-y-1/2",
-                                !message && "opacity-50 cursor-not-allowed"
-                            )}
-                        >
-                            <Send className="text-primary w-7! h-7!" />
-                        </button>
-                    </div>
+                    <select
+                        value={type}
+                        onChange={(e) => setType(e.target.value as MsgTypeProps)}
+                        className="border border-zinc-600 md:w-32 w-full rounded-md px-3 py-4 text-md"
+                    >
+                        <option value="explicacao">Explicação</option>
+                        <option value="resumo">Resumo</option>
+                        <option value="questao">Questões</option>
+                        <option value="duvida">Dúvida</option>
+                    </select>
                 </div>
-            )}
+
+                <div className="w-full relative">
+                    <input
+                        disabled={loading}
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Digite sua mensagem..."
+                        className="w-full border border-zinc-600 rounded-lg px-4 py-3 focus:outline-none"
+                    />
+
+                    <button
+                        onClick={sendMessage}
+                        disabled={!message || loading}
+                        className={cn(
+                            "px-2 py-1 rounded-xl font-medium transition active:scale-95",
+                            "absolute right-2 top-1/2 -translate-y-1/2",
+                            !message && "opacity-50 cursor-not-allowed"
+                        )}
+                    >
+                        <Send className="text-primary w-7! h-7!" />
+                    </button>
+                </div>
+            </div>
         </main>
     );
 }
