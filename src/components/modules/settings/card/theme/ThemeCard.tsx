@@ -7,7 +7,7 @@ export function ThemeCard() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle className="text-2xl">Aparência</CardTitle>
+                <CardTitle className="text-2xl">Tema</CardTitle>
             </CardHeader>
 
             <CardContent>

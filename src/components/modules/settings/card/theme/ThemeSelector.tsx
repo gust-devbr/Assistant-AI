@@ -20,8 +20,6 @@ export function ThemeSelector() {
 
     return (
         <div className="space-y-2">
-            <h3 className="text-lg font-medium">Tema</h3>
-
             <div className="grid grid-cols-3 gap-3">
                 {options.map(({ value, label, icon: Icon }) => {
                     const active = theme === value;

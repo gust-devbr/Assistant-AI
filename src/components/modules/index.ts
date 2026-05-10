@@ -21,4 +21,6 @@ export * from "./settings/card/user/FooterCard"
 // 2.2 - Modal(user)
 export * from "./settings/modal/user/DeleteAccount"
 export * from "./settings/modal/user/EditPass"
-// export * from "./settings/modal/user/Logout"
+
+// 2.4 - Table
+export * from "./settings/table/SelectOptions"
