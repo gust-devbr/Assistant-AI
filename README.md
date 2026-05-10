@@ -298,6 +298,7 @@ As rotas da API seguem o padrão do App Router em `src/app/api`.
 | Método | Endpoint | Descrição |
 | --- | --- | --- |
 | `GET` | `/api/private/me` | Retorna dados do usuário autenticado. |
+| `GET` | `/api/private/usage` | Busca o uso do limite de mensagens do usuário ou guest (anônimo) |
 | `PUT` | `/api/private/user` | Atualiza dados do usuário e/ou senha. |
 | `DELETE` | `/api/private/user` | Exclui a conta do usuário autenticado. |
 
@@ -372,6 +373,52 @@ A interface é baseada em:
 - Layout global com sidebar e estrutura centralizada.
 - Notificações com `sonner`.
 - Tema com `next-themes`.
+
+## Solução de problemas
+
+### `DATABASE_URL` não configurada
+
+Verifique se o arquivo `.env` existe e se a variável `DATABASE_URL` aponta para uma instância MongoDB válida.
+
+### Erro de autenticação/JWT
+
+Confirme se `JWT_SECRET` está definido. Se você alterar essa chave, sessões antigas deixarão de ser válidas.
+
+### Respostas da IA não são geradas
+
+Verifique:
+
+- Se `CO_API_KEY` está configurada corretamente.
+- Se a chave da Cohere está ativa.
+- Se há conectividade com a API da Cohere.
+- Se o modelo configurado está disponível para a sua conta.
+
+### Prisma Client desatualizado
+
+Execute novamente:
+
+```bash
+npx prisma generate
+```
+
+### Porta 3000 ocupada
+
+Execute em outra porta:
+
+```bash
+npm run dev -- -p 3001
+```
+
+## Boas práticas para contribuição
+
+1. Crie uma branch para sua alteração.
+2. Mantenha componentes pequenos e reutilizáveis.
+3. Preserve as tipagens em TypeScript.
+4. Rode lint antes de abrir uma PR:
+
+```bash
+npm run lint
+```
 
 5. Para mudanças no schema do Prisma, atualize a documentação e gere novamente o client:
 
