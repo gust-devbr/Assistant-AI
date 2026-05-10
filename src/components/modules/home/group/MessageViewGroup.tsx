@@ -1,4 +1,4 @@
-import { useChat } from "@/hooks/useMessage";
+import { useMessage } from "@/hooks/modules/home/useMessage";
 import { MsgOptionsPortal } from "../portal/MsgOptions";
 import { MarkdownMessage } from "@/utils";
 import { cn } from "@/lib/utils";
@@ -6,7 +6,7 @@ import { Message } from "@/types";
 import { useAuth } from "@/context/AuthContext";
 
 export function MessageView({ chat }: { chat: Message }) {
-    const { handleDeleteMsg } = useChat()
+    const { handleDeleteMsg } = useMessage()
     const { user } = useAuth()
 
     return (

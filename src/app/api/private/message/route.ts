@@ -4,6 +4,9 @@ import { msgService } from "@/services/msgService";
 import { sendMessage } from "@/lib/cohere";
 import { getToken } from "@/utils/modules/api/auth";
 import { chatService } from "@/services/chatService";
+import { Redis } from "@upstash/redis";
+
+const redis = Redis.fromEnv()
 
 export async function GET(req: NextRequest) {
     try {
@@ -23,9 +26,30 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
+        const user = await getToken(req);
+
         const { message, history, type, chatId: rawChatId } = await req.json();
 
-        const user = await getToken(req);
+        const deviceId = req.headers.get("x-device-id")
+
+        let key = ""
+        let limit = 15
+
+        if (user) {
+            key = `free-${user.id}`
+            limit = 50
+        } else {
+            key = `guest-${deviceId}`
+        }
+
+        const used = Number(await redis.get(key)) || 0
+
+        if (used >= limit) {
+            return Response.error("Você atingiu o limite diário. Volte em 24h", null, 400)
+        }
+
+        await redis.incr(key)
+        await redis.expire(key, 60 * 60 * 24)
 
         let chatId = rawChatId;
         let newChat = false;
@@ -44,7 +68,7 @@ export async function POST(req: NextRequest) {
         }
 
         if (!user) {
-            return Response.success({ reply });
+            return Response.success({ reply, remaining: limit - (used + 1) });
         }
 
         await msgService.create(chatId, message, reply);

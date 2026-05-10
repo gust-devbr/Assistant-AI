@@ -4,6 +4,7 @@ import { useAuth } from "@/context/AuthContext"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { AuthModal } from "../modal/AuthModal"
+import { LimiteUsageCard } from "@/components/LimitUsageCard"
 
 export function HeaderGroup() {
     const { user } = useAuth()
@@ -11,9 +12,15 @@ export function HeaderGroup() {
 
     return (
         <div className="flex flex-row justify-between w-full">
-            <h1 className="text-md md:text-xl font-bold">
-                {user ? `Olá ${user.name}` : "Olá Anônimo"}
-            </h1>
+            {!user ? (
+                <div className="w-full max-w-110">
+                    <LimiteUsageCard />
+                </div>
+            ) : (
+                <h1 className="text-md md:text-xl font-bold">
+                    Olá {user?.name}
+                </h1>
+            )}
 
             {user ? (
                 <Button

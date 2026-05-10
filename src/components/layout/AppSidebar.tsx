@@ -27,6 +27,7 @@ import { Chat, SelectedChat } from "@/types"
 import { ChatModal } from "../modules"
 import { Separator } from "../ui/separator"
 import { cn } from "@/lib/utils"
+import { LimiteUsageCard } from "../LimitUsageCard"
 
 export function AppSidebar() {
     const router = useRouter()
@@ -84,6 +85,12 @@ export function AppSidebar() {
                         collapsed={collapsed}
                         onReload={loadChats}
                     />
+
+                    <Separator />
+
+                    {!collapsed && (
+                        <LimiteUsageCard />
+                    )}
 
                     <Separator />
 

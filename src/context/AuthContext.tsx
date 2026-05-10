@@ -60,6 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     async function logout() {
         localStorage.removeItem("accent-theme");
+        localStorage.removeItem("fontSize");
         document.documentElement.setAttribute("data-accent", "gray");
 
         await apiFetch("/auth/logout", { method: "POST" })

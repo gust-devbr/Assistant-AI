@@ -1,4 +1,4 @@
-import { FooterCard, ProfileCard, ThemeCard } from "@/components/modules";
+import { FooterCard, ProfileCard, ThemeCard, FontSizeCard } from "@/components/modules";
 import { ColorThemeCard } from "@/components/modules/settings/card/theme/ColorSelectorCard";
 import { AccountCard } from "@/components/modules/settings/card/user/AccountCard";
 
@@ -16,6 +16,7 @@ export default function SettingsPage() {
                     <div className="flex-1 space-y-5">
                         <ThemeCard />
                         <ColorThemeCard />
+                        <FontSizeCard />
                     </div>
                     <div className="w-full md:max-w-110">
                         <AccountCard />

@@ -1,23 +1,35 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import { HeaderGroup, MessageView, MsgGroupInput } from "@/components/modules";
 import { Separator } from "@/components/ui/separator";
-import { useChat } from "@/hooks/useMessage";
+import { useUsage } from "@/hooks/useUsage";
+import { LimiteAlertScreen } from "@/components/layout/LimiteAlert";
+import { useMessage } from "@/hooks/modules/home/useMessage";
 
 export default function ChatPage() {
     const { chatId } = useParams();
+    const { reached } = useUsage()
 
     const {
+        chat,
         message,
         setMessage,
-        chat,
         type,
         setType,
         loading,
-        bottomRef,
         sendMessage,
-    } = useChat(chatId);
+        bottomRef
+    } = useMessage(chatId);
+
+    if (reached) {
+        return (
+            <div className="flex justify-center items-center h-full">
+                <LimiteAlertScreen />
+            </div>
+        )
+    }
 
     return (
         <main className="flex flex-col h-screen">

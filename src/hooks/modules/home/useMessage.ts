@@ -7,7 +7,7 @@ import { apiFetch } from "@/utils";
 import { Message, MsgProps, MsgTypeProps } from "@/types";
 import { ParamValue } from "next/dist/server/request/params";
 
-export function useChat(chatId?: ParamValue) {
+export function useMessage(chatId?: ParamValue) {
     const router = useRouter();
 
     const [message, setMessage] = useState<string>("");
