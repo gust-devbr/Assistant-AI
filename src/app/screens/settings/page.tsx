@@ -1,7 +1,6 @@
 import { FooterCard, ProfileCard, ThemeCard } from "@/components/modules";
 import { ColorThemeCard } from "@/components/modules/settings/card/theme/ColorSelectorCard";
 import { AccountCard } from "@/components/modules/settings/card/user/AccountCard";
-import { ColorThemeSelector } from "@/components/theme/themeSelector";
 
 export default function SettingsPage() {
     return (

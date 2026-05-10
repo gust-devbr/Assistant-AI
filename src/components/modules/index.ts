@@ -5,6 +5,10 @@ export * from "./home/modal/InfoButton"
 export * from "./home/modal/ChatModal"
 // 1.2 - Portal
 export * from "./home/portal/MsgOptions"
+// 1.3 - Groups
+export * from "./home/group/InputGroup"
+export * from "./home/group/MessageViewGroup"
+export * from "./home/group/HeaderGroup"
 
 // 2.SETTINGS
 // 2.1 - Card
