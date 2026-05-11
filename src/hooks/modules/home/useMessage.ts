@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { apiFetch } from "@/utils";
 import { Message, MsgProps, MsgTypeProps } from "@/types";
 import { ParamValue } from "next/dist/server/request/params";
+import { getDeviceId } from "@/lib/secury/getDeviceId";
 
 export function useMessage(chatId?: ParamValue) {
     const router = useRouter();
@@ -14,6 +15,7 @@ export function useMessage(chatId?: ParamValue) {
     const [chat, setChat] = useState<Message[]>([]);
     const [type, setType] = useState<MsgTypeProps>("explicacao");
     const [loading, setLoading] = useState<boolean>(false);
+    const [deviceId, setDeviceId] = useState<string | null>(null)
 
     const bottomRef = useRef<HTMLDivElement | null>(null);
 
@@ -30,6 +32,10 @@ export function useMessage(chatId?: ParamValue) {
         // eslint-disable-next-line react-hooks/immutability
         loadMessages();
     }, [chatId]);
+
+    useEffect(() => {
+        setDeviceId(getDeviceId())
+    }, [])
 
     async function loadMessages() {
         try {
@@ -61,6 +67,7 @@ export function useMessage(chatId?: ParamValue) {
 
         const res = await apiFetch("/private/message", {
             method: "POST",
+            headers: { "x-device-id": deviceId || "" },
             body: JSON.stringify({
                 message,
                 history: newChat,

@@ -10,6 +10,10 @@ export function generateDeviceId() {
 }
 
 export function getDeviceId() {
+    if (typeof window === "undefined") {
+        return null
+    }
+
     let id =
         localStorage.getItem(
             "device-id"

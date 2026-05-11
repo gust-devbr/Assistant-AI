@@ -18,7 +18,7 @@ export function useUsage() {
     const fetchUsage = useCallback(async () => {
         const res = await apiFetch("/private/usage", {
             method: "GET",
-            headers: { "x-device-id": getDeviceId() }
+            headers: { "x-device-id": getDeviceId() || "" }
         })
         const data = res?.data
         setData(data)
