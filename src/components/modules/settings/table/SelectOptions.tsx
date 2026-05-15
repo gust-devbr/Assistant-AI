@@ -22,7 +22,7 @@ export function SelectOptions(props: Props) {
 
     return (
         <div className={cn(
-            "flex flex-row gap-7 items-center text-lg md:justify-start justify-between",
+            "flex flex-row gap-7 items-center text-lg justify-start",
             "px-8 border-b-2 border-accent text-accent-foreground"
         )}>
             {options.map(op => (
