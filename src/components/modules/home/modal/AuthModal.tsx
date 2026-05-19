@@ -88,7 +88,12 @@ export function AuthModal() {
                         id="userName"
                         className="text-white text-[17px]! py-5"
                         value={form.userName}
-                        onChange={(e) => setForm(prev => ({ ...prev, userName: e.target.value }))}
+                        onChange={(e) => setForm(prev => ({
+                            ...prev,
+                            userName: e.target.value
+                                .toLowerCase()
+                                .replace(/[^a-z]/g, "")
+                        }))}
                     />
                     <Label htmlFor="password" className="text-white text-[18px]">Senha</Label>
                     <Input
