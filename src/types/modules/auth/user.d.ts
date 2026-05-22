@@ -3,4 +3,5 @@ export type User = {
     name: string
     userName: string
     password: string
+    createdAt?: Date
 }

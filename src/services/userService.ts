@@ -9,7 +9,8 @@ export const userService = {
                 id: true,
                 name: true,
                 userName: true,
-                password: true
+                password: true,
+                createdAt: true
             }
         });
     },

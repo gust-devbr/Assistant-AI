@@ -13,7 +13,8 @@ export async function GET(req: NextRequest) {
             select: {
                 id: true,
                 name: true,
-                userName: true
+                userName: true,
+                createdAt: true
             }
         });
         if (!findUser) return Response.error("Usuário não encontrado", null, 404);

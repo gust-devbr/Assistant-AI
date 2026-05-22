@@ -14,7 +14,8 @@ export async function POST(req: NextRequest) {
         const safeUser = {
             id: user.id,
             name: user.name,
-            userName: user.userName
+            userName: user.userName,
+            createdAt: user.createdAt
         };
 
         const token = jwtUtil.generate(user);
