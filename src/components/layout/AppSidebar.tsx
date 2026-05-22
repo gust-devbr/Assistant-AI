@@ -8,7 +8,7 @@ import {
     SidebarMenu,
     SidebarMenuItem,
     SidebarMenuButton,
-    useSidebar, // 👈 importante
+    useSidebar,
     SidebarTrigger
 } from "@/components/ui/sidebar"
 
