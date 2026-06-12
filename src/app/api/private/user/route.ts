@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { Response } from "@/utils";
+import { Response } from "next-lib-utils";
 import { userService } from "@/services/userService";
 import bcrypt from "bcryptjs";
 import { getToken } from "@/utils/modules/api/auth";
@@ -23,7 +23,7 @@ export async function PUT(req: NextRequest) {
 
         await userService.update(user.id, name, userName, newPassword)
 
-        return Response.success(null, "Dados atualizados. Saindo...")
+        return Response.success(null, "Dados atualizados")
     } catch (error) {
         return Response.error("Erro ao atualizar dados", error)
     }

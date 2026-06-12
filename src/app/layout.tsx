@@ -1,9 +1,15 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/context/AuthContext";
-import { Toaster } from "sonner";
+import type { Metadata } from "next";
+import { Geist, Geist_Mono, Itim } from "next/font/google";
+
 import LayoutStructure from "@/components/layout/LayoutStructure";
+import { QueryProvider } from "@/provider/QueryProvider";
+import { Toaster } from "sonner";
+
+const itim = Itim({
+  variable: "--font-itim",
+  weight: "400"
+})
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,17 +35,17 @@ export default function RootLayout({
     <html
       lang="pt-BR"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${itim.variable} font-itim h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <AuthProvider>
+        <QueryProvider>
           <main className="flex items-center justify-center flex-col gap-1 text-xl h-screen text-gray-400">
             <LayoutStructure>
               {children}
             </LayoutStructure>
           </main>
-          <Toaster />
-        </AuthProvider>
+          <Toaster richColors />
+        </QueryProvider>
       </body>
     </html>
   );

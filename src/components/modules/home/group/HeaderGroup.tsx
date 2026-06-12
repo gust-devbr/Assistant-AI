@@ -1,13 +1,12 @@
 "use client"
 
-import { useAuth } from "@/context/AuthContext"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-import { AuthModal } from "../modal/AuthModal"
 import { LimiteUsageCard } from "@/components/LimitUsageCard"
+import { useUser } from "@/modules/user/hooks/use-user"
 
 export function HeaderGroup() {
-    const { user } = useAuth()
+    const { data: user } = useUser()
     const router = useRouter()
 
     return (
@@ -31,7 +30,23 @@ export function HeaderGroup() {
                     Voltar
                 </Button>
             ) : (
-                <AuthModal />
+                <div className="flex flex-row gap-2">
+                    <Button
+                        variant="secondary"
+                        className="bg-primary text-lg"
+                        onClick={() => router.push("/screens/login")}
+                    >
+                        Entrar
+                    </Button>
+
+                    <Button
+                        className="text-lg"
+                        variant="outline"
+                        onClick={() => router.push("/screens/register")}
+                    >
+                        Cadastrar
+                    </Button>
+                </div>
             )}
         </div>
     )

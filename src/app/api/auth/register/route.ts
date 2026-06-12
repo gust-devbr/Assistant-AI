@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
-import { jwtUtil, Response } from "@/utils";
+import { Response } from "next-lib-utils";
+import { jwtUtil } from "@/utils";
 import { userService } from "@/services/userService";
 
 export async function POST(req: NextRequest) {

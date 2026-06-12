@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server"
 import { getToken } from "@/utils/modules/api/auth"
-import { Response } from "@/utils"
+import { Response } from "next-lib-utils";
 import { redis } from "@/lib/redis"
 
 export async function GET(req: NextRequest) {

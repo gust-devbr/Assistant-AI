@@ -1,4 +1,4 @@
-import { Response } from "@/utils";
+import { Response } from "next-lib-utils";
 import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 import { getToken } from "@/utils/modules/api/auth";

@@ -1,12 +1,11 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { useAuth } from "@/context/AuthContext"
 import { LogOut, MessageCircleCode } from "lucide-react"
+import { useLogout } from "@/modules/auth/hooks/use-logout"
 
 export function FooterCard() {
-    const { logout } = useAuth()
+    const logout = useLogout()
 
     return (
         <Card>
@@ -21,7 +20,7 @@ export function FooterCard() {
 
                 <div
                     className="text-lg flex flex-row items-center gap-2 text-red-500 cursor-pointer"
-                    onClick={logout}
+                    onClick={() => logout.mutateAsync()}
                 >
                     Sair da conta
                     <LogOut />

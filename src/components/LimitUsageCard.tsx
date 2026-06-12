@@ -1,5 +1,5 @@
-import { useUsage } from "@/hooks/useUsage"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
+import { useUsage } from "@/modules/usage/hooks/use-usage"
 import { Progress } from "./ui/progress"
 
 export function LimiteUsageCard() {

@@ -1,15 +1,19 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 "use client"
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useEffect, useState } from "react";
-import { apiFetch } from "@/utils";
 import { Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { SelectedChat } from "@/types";
 
 type Props = {
     open: boolean
@@ -17,8 +21,12 @@ type Props = {
     onOpenChange: (value: boolean) => void
     chat: SelectedChat | null
     collapsed: boolean
-    onReload: () => void
 }
+
+import { useCreateUpdateChat } from "@/modules/chat/hooks/use-create-update"
+import { SelectedChat } from "@/modules/chat/types/chat";
+import { useForm } from "react-hook-form"
+import { Spinner } from "@/components/ui/spinner";
 
 export function ChatModal({
     open,
@@ -26,43 +34,51 @@ export function ChatModal({
     onOpenChange,
     chat,
     collapsed,
-    onReload
 }: Props) {
     const router = useRouter();
-    const [title, setTitle] = useState<string>("");
-    const [loading, setLoading] = useState<boolean>(false);
+    const chatService = useCreateUpdateChat()
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { isDirty, isSubmitting }
+    } = useForm<SelectedChat>({
+        defaultValues: {
+            id: "",
+            title: ""
+        }
+    })
 
     useEffect(() => {
-        if (chat) {
-            setTitle(chat.title)
+        if (chat?.id !== null) {
+            reset({
+                id: chat?.id,
+                title: chat?.title
+            })
         } else {
-            setTitle("")
+            reset({
+                id: null,
+                title: ""
+            })
         }
-    }, [chat]);
+    }, [chat, reset]);
 
-    async function handleSubmit() {
-        setLoading(true)
-
-        if (!title) {
-            alert("Complete o campo");
-            return;
-        };
-
+    async function onSubmit(data: SelectedChat) {
         try {
-            const res = await apiFetch("/private/chat", {
-                method: "POST",
-                body: JSON.stringify({ title })
-            });
+            if (!data.title) {
+                alert("Complete o campo");
+                return;
+            };
 
-            const chatId = res.data.chat.id;
+            const res = await chatService.mutateAsync(data)
+
+            const { id: chatId } = res?.data?.chat;
             router.push(`/screens/home/${chatId}`);
 
             onOpenChange(false);
-            onReload()
-        } catch (error) {
+        } catch (error: unknown) {
             console.log(error);
-        } finally {
-            setLoading(false)
         }
     };
 
@@ -78,30 +94,33 @@ export function ChatModal({
             </DialogTrigger>
 
             <DialogContent className="bg-zinc-900">
-                <DialogHeader>
-                    <DialogTitle className="text-3xl text-white">
-                        Criar
-                    </DialogTitle>
-                </DialogHeader>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <DialogHeader>
+                        <DialogTitle className="text-3xl text-white">
+                            Criar
+                        </DialogTitle>
+                    </DialogHeader>
 
-                <div className="space-y-2">
-                    <Label htmlFor="title" className="text-white text-[18px]">Título</Label>
-                    <Input
-                        id="title"
-                        className="text-white text-[17px]! py-5"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />
+                    <div className="space-y-2">
+                        <Label htmlFor="title" className="text-white text-[18px]">Título</Label>
+                        <Input
+                            id="title"
+                            className="text-white text-[17px]! py-5"
+                            {...register("title")}
+                        />
 
-                    <Button
-                        onClick={handleSubmit}
-                        disabled={!title || loading}
-                        className="w-full py-4 text-[18px] mt-5"
-                    >
-                        Salvar
-                    </Button>
-                </div>
+                        <Button
+                            type="submit"
+                            disabled={isSubmitting || !isDirty}
+                            className="w-full py-4 text-[18px] mt-5"
+                        >
+                            {isSubmitting
+                                ? <Spinner className="w-5! h-5!" />
+                                : "Salvar"}
+                        </Button>
+                    </div>
+                </form>
             </DialogContent>
-        </Dialog >
+        </Dialog>
     )
-};  
+}

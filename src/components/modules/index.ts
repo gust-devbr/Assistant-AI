@@ -1,6 +1,5 @@
 // 1.HOME
 // 1.1 - Modal
-export * from "./home/modal/AuthModal"
 export * from "./home/modal/InfoButton"
 export * from "./home/modal/ChatModal"
 // 1.2 - Portal

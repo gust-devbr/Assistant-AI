@@ -11,16 +11,14 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { apiFetch } from "@/utils"
+import { useDeleteAllChats } from "@/modules/chat/hooks/use-delete"
 import { ChevronRight, Trash2 } from "lucide-react"
-import { useRouter } from "next/navigation"
 
 export function DeleteAllChats() {
-    const router = useRouter()
+    const deleleAllChats = useDeleteAllChats()
 
     async function handleDeleteAll() {
-        await apiFetch("/private/chat/delete-all", { method: "DELETE" })
-        setTimeout(() => router.refresh(), 800)
+        await deleleAllChats.mutateAsync()
     }
 
     return (
