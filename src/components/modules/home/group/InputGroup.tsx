@@ -35,7 +35,13 @@ export function MsgGroupInput(props: Props) {
                 </select>
             </div>
 
-            <div className="w-full relative">
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    onSubmit();
+                }}
+                className="w-full relative"
+            >
                 <input
                     disabled={loading}
                     value={message}
@@ -45,17 +51,18 @@ export function MsgGroupInput(props: Props) {
                 />
 
                 <button
-                    onClick={onSubmit}
+                    type="submit"
+                    // onClick={onSubmit}
                     disabled={!message || loading}
                     className={cn(
                         "px-2 py-1 rounded-xl font-medium transition active:scale-95",
                         "absolute right-2 top-1/2 -translate-y-1/2",
-                        !message && "opacity-50 cursor-not-allowed"
+                        !message && "opacity-50 cursor-not-allowed",
                     )}
                 >
                     <Send className="text-primary w-7! h-7!" />
                 </button>
-            </div>
+            </form>
         </div>
     )
 }

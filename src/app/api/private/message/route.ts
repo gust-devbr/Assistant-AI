@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
-import { Response, getSearchParams } from "@/utils";
+import { Response } from "next-lib-utils";
+import { getSearchParams } from "@/utils";
 import { msgService } from "@/services/msgService";
 import { sendMessage } from "@/lib/cohere";
 import { getToken } from "@/utils/modules/api/auth";

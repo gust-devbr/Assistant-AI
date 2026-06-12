@@ -1,6 +1,6 @@
 "use client"
 
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { ReactNode } from "react"
 
 export default function PrivateLayout({ children }: { children: ReactNode }) {

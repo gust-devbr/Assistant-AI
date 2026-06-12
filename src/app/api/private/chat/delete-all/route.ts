@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { Response } from "@/utils";
+import { Response } from "next-lib-utils";
 import { chatService } from "@/services/chatService";
 import { getToken } from "@/utils/modules/api/auth";
 

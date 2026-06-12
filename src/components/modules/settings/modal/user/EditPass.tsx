@@ -10,55 +10,56 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { apiFetch } from "@/utils"
 import { toast } from "sonner"
+import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
-import { ChevronRight, Lock, Trash2 } from "lucide-react"
-import { ConfirmDeleteAccount } from "../../confirm/DeleteAccount"
 import { Spinner } from "@/components/ui/spinner"
-import { useAuth } from "@/context/AuthContext"
+import { ChevronRight, Lock } from "lucide-react"
+
+import {
+    type UpdateUserSchemType,
+    updateUserSchema,
+} from "@/modules/user/schemas/update-schema"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useUpdateUser } from "@/modules/user/hooks/use-update-user"
+import { useState } from "react"
 
 export function EditPassModal() {
-    const { logout } = useAuth()
+    const updateUser = useUpdateUser()
+    const [open, setOpen] = useState<boolean>(false)
 
-    const [password, setPassword] = useState<string>("")
-    const [newPassword, setNewPassword] = useState<string>("")
-    const [loading, setLoading] = useState<boolean>(false)
-
-    async function handleSubmit() {
-
-        if (!password || !newPassword) {
-            toast.error("Insira sua senha")
-            return
+    const {
+        handleSubmit,
+        register,
+        reset,
+        formState: { isSubmitting }
+    } = useForm({
+        resolver: zodResolver(updateUserSchema),
+        mode: "onChange",
+        defaultValues: {
+            password: "",
+            newPassword: ""
         }
+    })
 
+    async function onSubmit(data: UpdateUserSchemType) {
         try {
-            setLoading(true)
-            const data = await apiFetch("/private/user", {
-                method: "PUT",
-                body: JSON.stringify({
-                    password,
-                    newPassword
-                })
-            })
+            const res = await updateUser.mutateAsync(data)
 
-            if (data.ok) {
-                toast.success(data.message)
-                await logout()
+            if (res.message) {
+                toast.success(res.message)
+                setOpen(false)
             } else {
-                toast.error(data.message)
+                toast.error(res.message)
             }
         } catch (error) {
             console.error(error)
-        } finally {
-            setLoading(false)
         }
     }
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <div className="flex flex-row items-center justify-between gap-2 text-zinc-500">
                     <span className="flex flex-row items-center gap-2">
@@ -75,30 +76,39 @@ export function EditPassModal() {
                     <DialogDescription>Insira uma nova senha para alterar</DialogDescription>
                 </DialogHeader>
 
-                <Input
-                    disabled={loading}
-                    placeholder="Senha atual"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    className="text-lg"
-                />
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                    <Input
+                        disabled={isSubmitting}
+                        placeholder="Senha atual"
+                        {...register("password")}
+                        className="text-lg"
+                    />
 
-                <Input
-                    disabled={loading}
-                    placeholder="Nova senha"
-                    value={newPassword}
-                    onChange={e => setNewPassword(e.target.value)}
-                    className="text-lg"
-                />
+                    <Input
+                        disabled={isSubmitting}
+                        placeholder="Nova senha"
+                        {...register("newPassword")}
+                        className="text-lg"
+                    />
 
-                <DialogFooter>
-                    <DialogClose>
-                        Cancelar
-                    </DialogClose>
-                    <Button onClick={handleSubmit} disabled={!password || !newPassword}>
-                        Salvar
-                    </Button>
-                </DialogFooter>
+                    <DialogFooter>
+                        <DialogClose
+                            type="button"
+                            onClick={() => reset()}
+                            disabled={isSubmitting}
+                        >
+                            Cancelar
+                        </DialogClose>
+                        <Button
+                            type="submit"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting
+                                ? <Spinner className="w-5! h-5!" />
+                                : "Salvar"}
+                        </Button>
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
     )

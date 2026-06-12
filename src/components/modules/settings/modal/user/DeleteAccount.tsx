@@ -10,45 +10,41 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { apiFetch } from "@/utils"
 import { toast } from "sonner"
-import { useState } from "react"
-import { ChevronRight, Trash2 } from "lucide-react"
-import { ConfirmDeleteAccount } from "../../confirm/DeleteAccount"
+import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
-import { useAuth } from "@/context/AuthContext"
+import { ChevronRight, Trash2 } from "lucide-react"
+
+import { ConfirmDeleteAccount } from "../../confirm/DeleteAccount"
+
+import { useForm } from "react-hook-form"
+import { useLogout } from "@/modules/auth/hooks/use-logout"
+import { useDeleteAccount } from "@/modules/user/hooks/use-delete-account"
+
+type DeleteFormData = { password: string }
 
 export function DeleteAccountModal() {
-    const { logout } = useAuth()
+    const logout = useLogout()
+    const handleDelete = useDeleteAccount()
 
-    const [password, setPassword] = useState<string>("")
-    const [loading, setLoading] = useState<boolean>(false)
+    const {
+        handleSubmit,
+        register,
+        formState: { isSubmitting }
+    } = useForm<DeleteFormData>()
 
-    async function handleDelete() {
-
-        if (!password) {
-            toast.error("Insira sua senha")
-            return
-        }
-
+    async function onSubmit(data: DeleteFormData) {
         try {
-            setLoading(true)
-            const data = await apiFetch("/private/user", {
-                method: "DELETE",
-                body: JSON.stringify({ password })
-            })
+            const res = await handleDelete.mutateAsync(data)
 
-            if (data.ok) {
-                toast.success(data.message)
-                await logout()
+            if (res.success) {
+                toast.success(res.message)
+                await logout.mutateAsync()
             } else {
-                toast.error(data.message)
+                toast.error(res.message)
             }
         } catch (error) {
             console.error(error)
-        } finally {
-            setLoading(false)
         }
     }
 
@@ -71,10 +67,9 @@ export function DeleteAccountModal() {
                 </DialogHeader>
 
                 <Input
-                    disabled={loading}
+                    disabled={isSubmitting}
                     placeholder="Senha atual"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    {...register("password")}
                     className="text-lg"
                 />
 
@@ -82,9 +77,9 @@ export function DeleteAccountModal() {
                     <DialogClose>
                         Cancelar
                     </DialogClose>
-                    {loading
+                    {isSubmitting
                         ? <Spinner />
-                        : <ConfirmDeleteAccount onConfirm={handleDelete} />}
+                        : <ConfirmDeleteAccount onConfirm={handleSubmit(onSubmit)} />}
                 </DialogFooter>
             </DialogContent>
         </Dialog>

@@ -2,13 +2,13 @@
 
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { useAuth } from "@/context/AuthContext";
+import { useUser } from "@/modules/user/hooks/use-user";
 import { Providers } from "@/provider/ThemeProvider";
 import { ThemeProvider } from "next-themes";
 import { ReactNode } from "react";
 
 export default function LayoutStructure({ children }: { children: ReactNode }) {
-    const { user } = useAuth();
+    const { data: user } = useUser();
 
     return (
         <SidebarProvider>

@@ -1,13 +1,13 @@
-import { useMessage } from "@/hooks/modules/home/useMessage";
 import { MsgOptionsPortal } from "../portal/MsgOptions";
 import { MarkdownMessage } from "@/utils";
 import { cn } from "@/lib/utils";
 import { Message } from "@/types";
-import { useAuth } from "@/context/AuthContext";
+import { useDeleteMsg } from "@/modules/message/hooks/use-delete-msg";
+import { useUser } from "@/modules/user/hooks/use-user";
 
 export function MessageView({ chat }: { chat: Message }) {
-    const { handleDeleteMsg } = useMessage()
-    const { user } = useAuth()
+    const deleteMsg = useDeleteMsg()
+    const { data: user } = useUser()
 
     return (
         <div key={chat.id} className={`flex ${chat.role === "USER" ? "justify-end" : "justify-start"}`}>
@@ -21,7 +21,7 @@ export function MessageView({ chat }: { chat: Message }) {
 
                 {user && (
                     <div className="flex justify-end text-sm opacity-70 hover:opacity-100">
-                        <MsgOptionsPortal onDelete={() => handleDeleteMsg(chat.id)} />
+                        <MsgOptionsPortal onDelete={() => deleteMsg.mutateAsync(chat.id)} />
                     </div>
                 )}
             </div>

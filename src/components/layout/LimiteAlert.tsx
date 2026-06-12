@@ -1,11 +1,13 @@
-import { useAuth } from "@/context/AuthContext"
-import { useUsage } from "@/hooks/useUsage"
 import { MessageCircleWarning, MessageSquareText } from "lucide-react"
-import { AuthModal } from "../modules"
+import { useUsage } from "@/modules/usage/hooks/use-usage"
+import { useUser } from "@/modules/user/hooks/use-user"
+import { Button } from "../ui/button"
+import { useRouter } from "next/navigation"
 
 export function LimiteAlertScreen() {
+    const router = useRouter()
     const { limit, used } = useUsage()
-    const { user } = useAuth()
+    const { data: user } = useUser()
 
     return (
         <div>
@@ -32,7 +34,23 @@ export function LimiteAlertScreen() {
                 <footer className="flex flex-col items-center gap-2 border border-zinc-800 p-3 mt-5 rounded-2xl bg-zinc-800">
                     <h1 className="text-white">Faça login ou crie uma conta para ter mais limite</h1>
                     <span className="border border-zinc-700 rounded-md bg-primary text-white">
-                        <AuthModal />
+                        <div className="flex flex-row gap-2">
+                            <Button
+                                variant="secondary"
+                                className="bg-primary text-lg"
+                                onClick={() => router.push("/screens/login")}
+                            >
+                                Entrar
+                            </Button>
+
+                            <Button
+                                className="text-lg"
+                                variant="outline"
+                                onClick={() => router.push("/screens/register")}
+                            >
+                                Cadastrar
+                            </Button>
+                        </div>
                     </span>
                 </footer>
             )}

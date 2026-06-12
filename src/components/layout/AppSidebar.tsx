@@ -1,5 +1,8 @@
 'use client'
 
+import { useParams, usePathname, useRouter } from "next/navigation"
+import { useState } from "react"
+
 import {
     Sidebar,
     SidebarContent,
@@ -9,61 +12,61 @@ import {
     SidebarMenuItem,
     SidebarMenuButton,
     useSidebar,
-    SidebarTrigger
 } from "@/components/ui/sidebar"
-
-import { useParams, useRouter } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
-import { apiFetch } from "@/utils"
-import { Button } from "../ui/button"
-import { Cog, MessageCircleMore, MoreVertical, Pin, PinOff, Trash } from "lucide-react"
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
-import { Chat, SelectedChat } from "@/types"
-import { ChatModal } from "../modules"
+import { Button } from "../ui/button"
 import { Separator } from "../ui/separator"
-import { cn } from "@/lib/utils"
+import { Cog, MessageCircleMore, MoreVertical, Pencil, Pin, PinOff, Trash } from "lucide-react"
 import { LimiteUsageCard } from "../LimitUsageCard"
+import { ChatModal } from "../modules"
+import { cn } from "@/lib/utils"
+
+import { Chat, SelectedChat } from "@/types"
+
+import { useChats } from "@/modules/chat/hooks/use-chats"
+import { useDeleteChat } from "@/modules/chat/hooks/use-delete"
+import { usePinChat } from "@/modules/chat/hooks/use-pin-chat"
 
 export function AppSidebar() {
     const router = useRouter()
+    const pathname = usePathname()
     const { state } = useSidebar()
     const { chatId } = useParams()
 
+    const { data: chats } = useChats()
+    const deleteChat = useDeleteChat()
+    const pinChat = usePinChat()
+
     const collapsed = state === "collapsed"
 
-    const [chats, setChats] = useState<Chat[]>([])
     const [selectedChat, setSelectedChat] = useState<SelectedChat | null>(null)
     const [open, setOpen] = useState(false)
-
-    const loadChats = useCallback(async () => {
-        const res = await apiFetch("/private/chat", { method: "GET" })
-        setChats(res?.data?.chats || res?.chats)
-    }, [])
 
     function openCreateModal() {
         setSelectedChat({ id: null, title: "" })
         setOpen(true)
     }
 
-    async function deleteChat(id: string) {
-        await apiFetch(`/private/chat/${id}/delete`, { method: "DELETE" })
-        await loadChats()
-        router.replace("/")
+    function openEditModal(chat: Chat) {
+        setSelectedChat({
+            id: chat.id,
+            title: chat.title
+        })
+        setOpen(true)
     }
 
-    async function fixedChat(id: string) {
-        await apiFetch(`/private/chat/${id}/pin`, { method: "PATCH" })
-        await loadChats()
-    }
+    async function handleDeleteChat(id: string) {
+        await deleteChat.mutateAsync({ id })
 
-    useEffect(() => {
-        loadChats()
-    }, [loadChats, chatId])
+        if (pathname === `/screens/home/${id}`) {
+            router.replace("/screens/home/null")
+        }
+    }
 
     return (
         <Sidebar collapsible="icon">
@@ -83,7 +86,6 @@ export function AppSidebar() {
                         onOpenChange={setOpen}
                         chat={selectedChat}
                         collapsed={collapsed}
-                        onReload={loadChats}
                     />
 
                     <Separator />
@@ -95,7 +97,7 @@ export function AppSidebar() {
                     <Separator />
 
                     <SidebarMenu className="relative">
-                        {chats.map(chat => (
+                        {chats?.map(chat => (
                             <SidebarMenuItem
                                 title={chat.title}
                                 key={chat.id}
@@ -141,14 +143,22 @@ export function AppSidebar() {
                                         <DropdownMenuContent align="end">
                                             <DropdownMenuItem
                                                 className="text-red-500"
-                                                onClick={() => deleteChat(chat.id)}
+                                                onClick={() => handleDeleteChat(chat.id)}
                                             >
                                                 <Trash />
                                                 Excluir
                                             </DropdownMenuItem>
 
                                             <DropdownMenuItem
-                                                onClick={() => fixedChat(chat.id)}
+                                                className="text-blue-500"
+                                                onClick={() => openEditModal(chat)}
+                                            >
+                                                <Pencil />
+                                                Editar
+                                            </DropdownMenuItem>
+
+                                            <DropdownMenuItem
+                                                onClick={() => pinChat.mutateAsync({ id: chat.id })}
                                             >
                                                 {chat.fixed ? <PinOff /> : <Pin />}
                                                 {chat.fixed ? "Desfixar" : "Fixar"}

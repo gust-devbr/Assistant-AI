@@ -1,135 +1,131 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 "use client"
 
-import { UserAvatar } from "@/components/avatar/UserAvatar"
-import { Button } from "@/components/ui/button"
+import { useEffect } from "react"
+
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { UserAvatar } from "@/components/avatar/UserAvatar"
+import { Spinner } from "@/components/ui/spinner"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useAuth } from "@/context/AuthContext"
-import { User } from "@/types"
-import { apiFetch } from "@/utils"
-import { Pencil } from "lucide-react"
-import React, { useEffect, useState } from "react"
 import { toast } from "sonner"
 
-type currentUser = Pick<User, 'name' | 'userName'>
+import { useUser } from "@/modules/user/hooks/use-user"
+
+import {
+    updateUserSchema,
+    type UpdateUserSchemType,
+} from "@/modules/user/schemas/update-schema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useUpdateUser } from "@/modules/user/hooks/use-update-user"
+import { useForm } from "react-hook-form"
 
 export function ProfileCard() {
-    const { user, logout } = useAuth()
+    const { data: user } = useUser()
+    const updateUser = useUpdateUser()
 
-    const [isEditing, setIsEditing] = useState<string | null>(null)
-    const [form, setForm] = useState<currentUser>({
-        name: "",
-        userName: ""
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { isDirty, errors, isSubmitting }
+    } = useForm({
+        resolver: zodResolver(updateUserSchema),
+        mode: "onChange",
+        defaultValues: {
+            name: "",
+            userName: ""
+        }
     })
+
 
     useEffect(() => {
         if (user) {
-            setForm({
+            reset({
                 name: user.name || "",
                 userName: user.userName || ""
             })
         }
-    }, [user])
+    }, [user, reset])
 
-    async function handleUpdateUser(e: React.MouseEvent<HTMLButtonElement>) {
-        e.preventDefault()
-        const { name, userName } = form
-
-        if (!name || !userName) {
-            toast.error("Preencha os campos")
-            return
-        }
-
+    async function onSubmit(data: UpdateUserSchemType) {
         try {
-            const data = await apiFetch("/private/user", {
-                method: "PUT",
-                body: JSON.stringify({
-                    ...(name && { name }),
-                    ...(userName && { userName })
-                })
-            })
+            const res = await updateUser.mutateAsync(data)
 
-            if (data.ok) {
-                toast.success(data.message)
-                setTimeout(() => logout(), 1000)
+            if (res.success) {
+                toast.success(res.message)
+                window.location.reload()
             } else {
-                toast.error(data.message)
+                toast.error(res.message)
             }
         } catch (error) {
             console.error(error)
         }
     }
 
-    const disabledSubmitBtn =
-        !!isEditing &&
-        form.name === user?.name &&
-        form.userName === user?.userName
-
     return (
-        <Card className="flex-1">
-            <CardHeader>
-                <CardTitle className="text-2xl">Perfil</CardTitle>
-            </CardHeader>
+        <Card>
+            <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
+                <CardHeader>
+                    <CardTitle className="text-2xl">Perfil</CardTitle>
+                </CardHeader>
 
-            <CardContent className="flex flex-row justify-between items-center gap-5">
-                <UserAvatar className="md:w-35 md:h-35 w-25 h-25" />
+                <CardContent className="flex flex-row justify-between items-center gap-5">
+                    <UserAvatar className="md:w-35 md:h-35 w-25 h-25" />
 
-                <div className="flex flex-1 flex-col gap-5">
-                    <div className="w-full space-y-2 relative">
-                        <Label className="text-[17px]" htmlFor="name">Nome</Label>
-                        <Input
-                            disabled={isEditing !== "name"}
-                            id="name"
-                            value={form.name}
-                            onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
-                            className="text-[17px]! py-5"
-                        />
-                        <button
-                            onClick={() => setIsEditing(prev => (prev === "name" ? null : "name"))}
-                            type="button"
-                            className="absolute right-3 top-1/2 text-gray-500"
-                        >
-                            <Pencil />
-                        </button>
+                    <div className="flex flex-1 flex-col gap-5">
+                        <section>
+                            <Label className="text-[17px]" htmlFor="name">Nome</Label>
+                            <Input
+                                id="name"
+                                {...register("name")}
+                                className="text-[17px]! py-5"
+                            />
+                            {errors.name && (
+                                <p className="text-sm text-red-500">
+                                    {errors.name.message}
+                                </p>
+                            )}
+                        </section>
+
+                        <section>
+                            <Label className="text-[17px]" htmlFor="userName">Nome de Usuário</Label>
+                            <Input
+                                id="userName"
+                                {...register("userName")}
+                                className="text-[17px]! py-5"
+                            />
+                            {errors.userName && (
+                                <p className="text-sm text-red-500">
+                                    {errors.userName.message}
+                                </p>
+                            )}
+                        </section>
                     </div>
+                </CardContent>
 
-                    <div className="w-full space-y-2 relative">
-                        <Label className="text-[17px]" htmlFor="userName">Nome de Usuário</Label>
-                        <Input
-                            disabled={isEditing !== "userName"}
-                            id="userName"
-                            value={form.userName}
-                            onChange={(e) => setForm(prev => ({ ...prev, userName: e.target.value }))}
-                            className="text-[17px]! py-5"
-                        />
-                        <button
-                            onClick={() => setIsEditing(prev => (prev === "userName" ? null : "userName"))}
+                {isDirty && (
+                    <CardFooter className="flex justify-end gap-2">
+                        <Button
                             type="button"
-                            className="absolute right-3 top-1/2 text-gray-500"
+                            className="text-[16px]"
+                            onClick={() => reset()}
                         >
-                            <Pencil />
-                        </button>
-                    </div>
-                </div>
-            </CardContent>
+                            Cancelar
+                        </Button>
 
-            {isEditing && (
-                <CardFooter className="flex justify-end gap-2">
-                    <Button className="text-[16px]" onClick={() => setIsEditing(null)}>
-                        Cancelar
-                    </Button>
-
-                    <Button
-                        onClick={handleUpdateUser}
-                        className="bg-blue-600 text-white text-[16px]"
-                        disabled={disabledSubmitBtn}
-                    >
-                        Salvar alterações
-                    </Button>
-                </CardFooter>
-            )}
+                        <Button
+                            type="submit"
+                            className="bg-blue-600 text-white text-[16px]"
+                            disabled={!isDirty || isSubmitting}
+                        >
+                            {isSubmitting
+                                ? <Spinner className="w-5! h-5!" />
+                                : "Salvar alterações"}
+                        </Button>
+                    </CardFooter>
+                )}
+            </form>
         </Card>
     )
 }
